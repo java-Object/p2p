@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>资源页面2</title>
+    <!--alert(1111)-->
+    <script th:inline="javascript">
+
+        var basepath = [[${#request.scheme}]] + "://" +
+                       [[${#request.serverName}]] + ":" +
+                       [[${#request.serverPort}]] +
+                       [[${#request.contextPath}]] ;
+
+        // 有url，但是没有参数
+        // 获取当前页面的地址：http://localhost:8080/index?null
+        var rUrl = [[${#request.requestURL}]] + '?' + [[${#request.queryString}]];
+
+        //如果说没有参数的url地址：http://localhost:8080/p2p/?null
+        //?null并不会影响，我们实际的功能，但是看着不舒服。
+        //如果说带参数的url地址：http://localhost:8080/p2p/loan/loan?pType=1
+
+    </script>
+</head>
+<body>
+
+    <!-- 隐藏域，存放returnUrl地址 -->
+    <!-- ${#strings.replace(#request.requestURL + '?' + #request.queryString, '?null' , '')} :
+     意思是 #request.requestURL + '?' + #request.queryString 如果是null的话，就将null替换成'' -->
+    <!-- 解析：http://localhost:8080/p2p/?null == http://localhost:8080/p2p -->
+    <input type="hidden" id="returnUrl"
+           th:value="|${#strings.replace(#request.requestURL + '?' + #request.queryString, '?null' , '')}|"/>
+
+</body>
+</html>

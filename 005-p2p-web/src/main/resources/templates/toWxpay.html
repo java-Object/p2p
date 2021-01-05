@@ -1,0 +1,111 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="keywords" content="动力金融网，投资理财，P2P理财，互联网金融，投资理财，理财，网络贷款，个人贷款，小额贷款，网络投融资平台, 网络理财, 固定收益, 100%本息保障"/>
+    <meta name="description" content="动力金融网-专业的互联网金融平台！预期年化收益可高达13%，第三方资金托管，屡获大奖。"/>
+    <title>动力金融网-专业的互联网金融公司</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/center.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/fund-guanli.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/security.css}"/>
+    <script type="text/javascript" language="javascript" th:src="@{/js/jquery-1.7.2.min.js}"></script>
+    <script type="text/javascript" language="javascript" th:src="@{/js/trafficStatistics.js}"></script>
+    <!--qrious插件地址-->
+    <script src="https://cdn.bootcdn.net/ajax/libs/qrious/3.0.1/qrious.js"></script>
+
+    <script th:inline="javascript">
+        // 1.通过创建QRious对象，生成二维码图片
+        // level：容错率,30% 25% 15% 7%
+        // size：尺寸
+        // element：加载标签对象
+        // padding：距离上方的空间，25px
+        $(function () {
+
+            //发送ajax请求，获取code_url
+            $.ajax({
+                url: basepath + "/loan/recharge/getWxpayQrCode",
+                data:{
+                    "out_trade_no": [[${out_trade_no}]],
+                    "total_fee": [[${total_fee}]],
+                    "body": [[${body}]]
+                },
+                type:"post",
+                dataType:"json",
+                success:function (data) {
+                    if(data.success){
+                        var qr = new QRious({
+                            element:document.getElementById('qrious'),
+                            padding:25,
+                            level: 'H',
+                            size: 350,
+                            value: data.data
+                        });
+                    }
+                },
+                error:function () {
+                    //网络异常
+                }
+            })
+
+
+        })
+
+
+
+    </script>
+</head>
+
+<body>
+<!--页头start-->
+<div id="header">
+    <div th:include="commons/header :: html"></div>
+    <div th:include="commons/basepath :: html"></div>
+</div>
+<!--页头end-->
+
+<!-- 二级导航栏start -->
+<div th:include="commons/subNav :: html"></div>
+<!-- 二级导航栏end -->
+
+<!--页中start-->
+<div class="mainBox">
+    <div class="homeWap">
+        <div class="fund-guanli clearfix">
+            <div class="left-nav">
+                <div th:include="commons/leftNav :: html"></div>
+            </div>
+
+            <div class="right-body">
+                <div class="leftTitle"><span class="on">第三方支付平台</span></div>
+
+                <div class="unrecognized" style="display:block;" id="unrecognized1">
+                    <!--<h3 th:text="${trade_msg}">显示错误信息</h3>-->
+                    <!--<a class="input_btn" th:href="@{/loan/page/recharge}">再去充值</a>-->
+
+                    <!-- 充值订单编号、订单类型、充值金额 -->
+                    <h3 th:text="|订单编号：${out_trade_no}   订单类型：${body}    支付金额：${#numbers.formatCurrency(total_fee)}元|">订单编号：xxxxx   订单类型：xxxxxx    支付金额：xxxx元</h3>
+                    <!--
+                        二维码生成有2种方式：
+                            1、在后台生成二维码图片，通过response来响应
+                                <img src="xxx">
+                                    通过src，发送的请求，必然后台会响应回来，以流的方式进行响应
+                                    将生成的二维码图片响应回来
+                            2、在前台生成二维码图片，根据js插件
+                                qrious插件
+                    -->
+                    <!--<img th:src="@{/loan/recharge/getWxpayQrCode(out_trade_no=${out_trade_no},total_fee=${total_fee},body=${body})}">-->
+                    <img id="qrious">
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--页中end-->
+
+<!--页脚start-->
+<div th:include="commons/footer :: html"></div>
+<!--页脚end-->
+</body>
+</html>
